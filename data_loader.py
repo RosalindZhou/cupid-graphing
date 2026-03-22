@@ -198,5 +198,5 @@ if __name__ == '__main__':
     # python_ta.check_all(config={
     #     'extra-imports': ['csv'],
     #     'allowed-io': ['load_and_clean_data'],
-    #     'max-line-length': 100
+    #     'max-line-length': 120
     # })
