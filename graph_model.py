@@ -4,6 +4,7 @@ from __future__ import annotations
 import networkx as nx
 from typing import Callable
 
+
 class CompatibilityGraph:
     """A graph class storing all user nodes and their compatibility edges.
 
@@ -19,7 +20,7 @@ class CompatibilityGraph:
     threshold: float
 
     # set the threshold, implement the methods and doctests
-    def __init__(self, threshold: float = ) -> None:
+    def __init__(self, threshold: float = 0.75) -> None:
         """Initialize a new empty compatibility graph with the given threshold."""
         self.graph = nx.Graph()
         self.threshold = threshold
@@ -32,7 +33,7 @@ class CompatibilityGraph:
         """Calculate the weight between all pairs of nodes using the similarity_function.
         If the calculated weight > self.threshold, add a weighted edge to the graph.
         """
-    
+
     def add_new_user(self, new_user_id: str, new_user_vector: list[float]) -> None:
         """Add a new user to the graph dynamically and compute their edges with existing nodes.
         """

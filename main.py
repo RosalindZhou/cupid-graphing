@@ -5,10 +5,7 @@ from __future__ import annotations
 import data_loader
 import recommendation
 import visualizer
-# from data_loader import generate_user_vectors
-# from graph_model import CompatibilityGraph
-# from recommendation import calculate_euclidean_weight, weighted_bfs_recommendation
-# from visualizer import draw_social_cluster
+from graph_model import CompatibilityGraph
 
 
 def get_user_input() -> list[float]:
@@ -34,8 +31,33 @@ def get_user_input() -> list[float]:
 def main() -> None:
     """Execute the main workflow of the Cupid Graphing recommendation system."""
     print("Starting Cupid Graphing Engine...")
+    # 1. Lucy: Load the cleaned user data vector
+    # The function "generate_user_vectors" should return a dictionary of the form {ID: [0.1, 0.5, ...]}
+    user_vectors = data_loader.generate_user_vectors("cupid_algorithm_dataset.csv")
 
+    # 2. Role A: Initialize the graph and add existing users as nodes
+    # Set the threshold at 0.75. Only nodes with a similarity level exceeding this value will be connected by edges.
+    graph = CompatibilityGraph(threshold=0.75)
+    graph.add_users_as_nodes(user_vectors)
 
+    # 3. Lucy: Construct the initial social network edges based on the similarity algorithm
+    # Here, the Euclidean calculation function written by Rosalind is passed in as a parameter
+    graph.build_edges(recommendation.calculate_euclidean_weight)
+
+    # Obtain the new user data of the currently running program
+    new_user_vector = get_user_input()
+    new_user_id = "New_User_Interactive"
+
+    # Insert the new user's activity into the chart
+    graph.add_new_user(new_user_id, new_user_vector)
+
+    # 5. Rosalind: Execute 2-degree Breadth-First Search to recommend logical patterns for finding the best match
+    # Return the top 5 matching candidates along with their scores
+    matches = recommendation.weighted_bfs_recommendation(graph.graph, new_user_id, top_n=5)
+
+    # 6. Anna: Call the visual rendering results
+    print(f"\nThe most suitable match we found for you is: {matches}")
+    visualizer.draw_social_cluster(graph.graph, new_user_id, matches)
 
 
 if __name__ == "__main__":
