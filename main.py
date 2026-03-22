@@ -19,12 +19,12 @@ def get_user_input() -> list[float]:
     a = float(input("Your affinity/teamwork ability (Agreeableness): ")) / 10
     s = float(input("Your emotional expression/sensitivity (Expressiveness): ")) / 10
 
-    print("What's your love language? (1:Quality Time, 2:Physical Touch, 3:Acts of service, 4:Physical Touch, "
+    print("What's your love language? (1:Quality Time, 2:Physical Touch, 3:Acts of service, 4:Receiving Gifts, "
           "5:Word of Affirmation)")
 
     choice = int(input("Please select the number: "))
     love_lang_vec = [1 if i + 1 == choice else 0 for i in range(5)]
-    user_vector = [o, e, a, c, s] + love_lang_vec
+    user_vector = [o, c, e, a, s] + love_lang_vec
     return user_vector
 
 
@@ -35,7 +35,7 @@ def main() -> None:
     # The function "generate_user_vectors" should return a dictionary of the form {ID: [0.1, 0.5, ...]}
     user_vectors = data_loader.generate_user_vectors("cupid_algorithm_dataset.csv")
 
-    # 2. Role A: Initialize the graph and add existing users as nodes
+    # 2. Lucy: Initialize the graph and add existing users as nodes
     # Set the threshold at 0.75. Only nodes with a similarity level exceeding this value will be connected by edges.
     graph = CompatibilityGraph(threshold=0.75)
     graph.add_users_as_nodes(user_vectors)
