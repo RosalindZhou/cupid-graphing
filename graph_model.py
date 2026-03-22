@@ -57,6 +57,14 @@ class CompatibilityGraph:
         
         Preconditions:
             - len(self.graph.nodes) > 0
+            
+        >>> g = CompatibilityGraph(threshold=0.5)
+        >>> g.add_users_as_nodes({'A': [1.0], 'B': [0.8], 'C': [0.1]})
+        >>> g.build_edges(lambda u, v: 1.0 - abs(u[0] - v[0]))
+        >>> g.graph.has_edge('A', 'B')
+        True
+        >>> g.graph.has_edge('A', 'C')
+        False
         """
         nodes = list(self.graph.nodes)
         for i in range(len(nodes)):
@@ -73,16 +81,37 @@ class CompatibilityGraph:
                      new_user_id: str,
                      new_user_vector: list[float],
                      similarity_function: Callable[[list[float], list[float]], float]) -> None:
-        """Add a new user dynamically and compute edges to existing nodes."""
+        """Add a new user dynamically and compute edges to existing nodes.
+        Ensures the new user is connected to at least their 5 top matches (if possible) 
+        even if weights are strictly below the threshold.
+        
+        Preconditions:
+            - new_user_id not in self.graph
+            
+        >>> g = CompatibilityGraph(threshold=0.9)
+        >>> g.add_users_as_nodes({'A': [1.0], 'B': [1.0]})
+        >>> g.add_new_user('C', [0.1], lambda u, v: 1.0 - abs(u[0] - v[0]))
+        >>> g.graph.has_edge('C', 'A') # Forced connection due to top 5 fallback
+        True
+        """
         if new_user_id in self.graph:
             raise ValueError('new_user_id already exists in graph')
         existing_nodes = list(self.graph.nodes)
         self.graph.add_node(new_user_id, vector=new_user_vector)
-        for node in existing_nodes:
-            existing_vector = self.graph.nodes[node]['vector']
+        weights = []
+        for existing_id in existing_nodes:
+            existing_vector = self.graph.nodes[existing_id]['vector']
             weight = similarity_function(new_user_vector, existing_vector)
-            if weight > self.threshold:
-                self.graph.add_edge(new_user_id, node, weight=weight)
+            weights.append((existing_id, weight))
+            
+        weights.sort(key=lambda x: x[1], reverse=True)
+        
+        connected = 0
+        for existing_id, weight in weights:
+            # Force connect to at least top 5 users if threshold is too strict
+            if weight > self.threshold or connected < 5:
+                self.graph.add_edge(new_user_id, existing_id, weight=weight)
+                connected += 1
 
 
 if __name__ == '__main__':

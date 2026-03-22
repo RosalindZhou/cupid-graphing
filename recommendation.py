@@ -16,8 +16,9 @@ def calculate_euclidean_weight(vec_u: list[float], vec_v: list[float], max_d: fl
     >>> calculate_euclidean_weight([1.0, 1.0], [1.0, 1.0], 5.0)
     1.0
     """
-    distance = math.sqrt(sum((u - v) ** 2 for u, v in zip(vec_u, vec_v)))
+    distance = math.dist(vec_u, vec_v)
     return max(0.0, 1.0 - (distance / max_d))
+
 
 def calculate_dot_product_similarity(vec_u: list[float], vec_v: list[float]) -> float:
     """Return a similarity score based on the dot product (angle) of vec_u and vec_v.

@@ -29,16 +29,27 @@ CATEGORICAL_COLUMNS = [
 ]
 
 
-def load_and_clean_data(filepath: str) -> list[dict[str, Any]]:
+def load_and_clean_data(filepath: str, max_users: int = 4000) -> list[dict[str, Any]]:
     """Return a list of user data dictionaries from the given CSV file,
-    with duplicate users removed.
+    with duplicate users removed, capped at max_users to prevent performance explosion.
 
     The original CSV stores paired users in columns starting with a_ and b_.
     This function separates them into one unified user table and removes duplicates.
 
     Preconditions:
-    - filepath is the filename of a valid CSV data file
+        - filepath != ''
 
+    >>> import tempfile, os
+    >>> temp_csv = tempfile.NamedTemporaryFile(mode='w+', delete=False, newline='', encoding='utf-8-sig')
+    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion','a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language','a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition','b_openness','b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity','b_love_language','b_emotional_expressiveness']
+    >>> _ = temp_csv.write(','.join(header) + '\\n')
+    >>> row1 = ['20','1','NY','IT','0.5','0.5','0.5','0.5','0.5','0.5','0.5','Time','0.5'] * 2
+    >>> _ = temp_csv.write(','.join(row1) + '\\n')
+    >>> temp_csv.close()
+    >>> data = load_and_clean_data(temp_csv.name, max_users=10)
+    >>> len(data) == 1
+    True
+    >>> os.remove(temp_csv.name)
     """
     users = []
     visited = set()
@@ -52,9 +63,13 @@ def load_and_clean_data(filepath: str) -> list[dict[str, Any]]:
             if signature_a not in visited:
                 visited.add(signature_a)
                 users.append(user_a)
+                if len(users) >= max_users:
+                    break
             if signature_b not in visited:
                 visited.add(signature_b)
                 users.append(user_b)
+                if len(users) >= max_users:
+                    break
     for i in range(len(users)):
         users[i]['user_id'] = f'User_{i}'
     return users
@@ -103,6 +118,10 @@ def normalize_numerical_data(
         data: list[dict[str, Any]],
         numerical_columns: list[str]) -> list[dict[str, Any]]:
     """Return the data list with numerical values scaled to a range between 0 and 1.
+    
+    Preconditions:
+        - data != []
+        - numerical_columns != []
 
     >>> rows = [{'x': 10, 'y': 100}, {'x': 20, 'y': 300}]
     >>> normed = normalize_numerical_data(rows, ['x', 'y'])
@@ -136,14 +155,27 @@ def normalize_numerical_data(
     return normalized
 
 
-def generate_user_vectors(filepath: str) -> dict[str, list[float]]:
+def generate_user_vectors(filepath: str, max_users: int = 4000) -> dict[str, list[float]]:
     """Return a dictionary mapping user IDs to their final numerical feature vectors.
     This function combines all cleaning and formatting steps.
     
     Preconditions:
         - filepath != ''
+        - max_users > 0
+        
+    >>> import tempfile, os
+    >>> temp_csv = tempfile.NamedTemporaryFile(mode='w+', delete=False, newline='', encoding='utf-8-sig')
+    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion','a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language','a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition','b_openness','b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity','b_love_language','b_emotional_expressiveness']
+    >>> _ = temp_csv.write(','.join(header) + '\\n')
+    >>> row1 = ['20','1','NY','IT','0.5','0.5','0.5','0.5','0.5','0.5','0.5','Time','0.5'] * 2
+    >>> _ = temp_csv.write(','.join(row1) + '\\n')
+    >>> temp_csv.close()
+    >>> vecs = generate_user_vectors(temp_csv.name, max_users=10)
+    >>> len(vecs['User_0']) > 5
+    True
+    >>> os.remove(temp_csv.name)
     """
-    data = load_and_clean_data(filepath)
+    data = load_and_clean_data(filepath, max_users)
     if not data:
         return {}
     for col in CATEGORICAL_COLUMNS:
@@ -167,7 +199,17 @@ def generate_user_vectors(filepath: str) -> dict[str, list[float]]:
 
 
 def _extract_user(row: dict[str, str], prefix: str) -> dict[str, Any]:
-    """Extract a single user dictionary from a row using the given prefix."""
+    """Extract a single user dictionary from a row using the given prefix.
+    
+    Preconditions:
+        - prefix in {'a_', 'b_'}
+        - f'{prefix}age' in row
+        
+    >>> row_data = {'a_age': '25', 'a_education': '3', 'a_location': ' NY ', 'a_career_field': ' Tech ', 'a_career_ambition': '0.8', 'a_openness': '0.9', 'a_extraversion': '0.5', 'a_agreeableness': '0.7', 'a_conscientiousness': '0.8', 'a_chronotype': '0.4', 'a_spontaneity': '0.6', 'a_love_language': ' Gifts ', 'a_emotional_expressiveness': '0.9'}
+    >>> user = _extract_user(row_data, 'a_')
+    >>> user['age'] == 25 and user['location'] == 'NY'
+    True
+    """
     return {
         'age': int(row[f'{prefix}age']),
         'education': int(row[f'{prefix}education']),
@@ -187,6 +229,9 @@ def _extract_user(row: dict[str, str], prefix: str) -> dict[str, Any]:
 
 def _row_signature(row: dict[str, Any]) -> tuple:
     """Return a hashable signature for duplicate detection.
+    
+    Preconditions:
+        - row != {}
 
     >>> _row_signature({'b': 2, 'a': 1})
     (('a', 1), ('b', 2))
