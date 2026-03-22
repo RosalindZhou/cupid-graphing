@@ -19,7 +19,6 @@ class CompatibilityGraph:
     graph: nx.Graph
     threshold: float
 
-    # set the threshold, implement the methods and doctests
     def __init__(self, threshold: float = 0.75) -> None:
         """Initialize a new empty compatibility graph with the given threshold.
 
@@ -37,6 +36,9 @@ class CompatibilityGraph:
     def add_users_as_nodes(self, user_vectors: dict[str, list[float]]) -> None:
         """Add all users from the user_vectors dictionary as vertices in the graph.
 
+        Preconditions:
+            - all(len(vec) > 0 for vec in user_vectors.values())
+
         >>> g = CompatibilityGraph()
         >>> g.add_users_as_nodes({'A': [0.1, 0.2], 'B': [0.3, 0.4]})
         >>> sorted(g.graph.nodes)
@@ -52,6 +54,9 @@ class CompatibilityGraph:
         """Calculate the weight between all pairs of nodes using the similarity_function.
 
         If the calculated weight exceeds self.threshold, add a weighted edge to the graph.
+        
+        Preconditions:
+            - len(self.graph.nodes) > 0
         """
         nodes = list(self.graph.nodes)
         for i in range(len(nodes)):

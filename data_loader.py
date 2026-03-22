@@ -9,7 +9,6 @@ from __future__ import annotations
 import csv
 from typing import Any
 
-# implement the functions, doctests
 NUMERICAL_COLUMNS = [
     'age',
     'education',
@@ -66,6 +65,9 @@ def apply_one_hot_encoding(data: list[dict[str, Any]], column_name: str) -> list
     one-hot encoded features.
 
     This ensures all categories have an equal mathematical distance.
+
+    Preconditions:
+        - column_name != ''
 
     >>> rows = [{'user_id': 'U1', 'love_language': 'Quality Time'},
     ...         {'user_id': 'U2', 'love_language': 'Physical Touch'}]
@@ -137,6 +139,9 @@ def normalize_numerical_data(
 def generate_user_vectors(filepath: str) -> dict[str, list[float]]:
     """Return a dictionary mapping user IDs to their final numerical feature vectors.
     This function combines all cleaning and formatting steps.
+    
+    Preconditions:
+        - filepath != ''
     """
     data = load_and_clean_data(filepath)
     if not data:
