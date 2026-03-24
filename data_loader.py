@@ -212,7 +212,10 @@ def _extract_user(row: dict[str, str], prefix: str) -> dict[str, Any]:
         - prefix in {'a_', 'b_'}
         - f'{prefix}age' in row
 
-    >>> row_data = {'a_age': '25', 'a_education': '3', 'a_location': ' NY ', 'a_career_field': ' Tech ', 'a_career_ambition': '0.8', 'a_openness': '0.9', 'a_extraversion': '0.5', 'a_agreeableness': '0.7', 'a_conscientiousness': '0.8', 'a_chronotype': '0.4', 'a_spontaneity': '0.6', 'a_love_language': ' Gifts ', 'a_emotional_expressiveness': '0.9'}
+    >>> row_data = {'a_age': '25', 'a_education': '3', 'a_location': ' NY ', 'a_career_field': ' Tech ',
+    >>> 'a_career_ambition': '0.8', 'a_openness': '0.9', 'a_extraversion': '0.5', 'a_agreeableness': '0.7',
+    >>> 'a_conscientiousness': '0.8', 'a_chronotype': '0.4', 'a_spontaneity': '0.6', 'a_love_language': ' Gifts ',
+    >>> 'a_emotional_expressiveness': '0.9'}
     >>> user = _extract_user(row_data, 'a_')
     >>> user['age'] == 25 and user['location'] == 'NY'
     True
