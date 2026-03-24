@@ -16,39 +16,68 @@
 
 \section{Introduction and Problem Description}
 \begin{itemize}
-    \item In today's social platforms, the biggest challenge is finding the right people, not just finding people. Most matching systems use simple filters like age or location, but these do not guarantee real compatibility. True compatibility depends on complex personal traits, such as personality types and habits.
-    \item To solve this problem, our project uses Graph Theory and Vector Similarity to build an interactive recommendation system. In our graph model, each person is a Node (Vertex), and a potential match between two people is an Edge. By converting user traits into mathematical vectors, we calculate the similarity between users to recommend the best partners.
+    \item In today's social platforms, the biggest challenge is finding the right people, not just finding people.
+     Most matching systems use simple filters like age or location, but these do not guarantee real compatibility.
+      True compatibility depends on complex personal traits, such as personality types and habits.
+    \item To solve this problem, our project uses Graph Theory and Vector Similarity to build an interactive
+    recommendation system. In our graph model, each person is a Node (Vertex), and a potential match between two people
+     is an Edge. By converting user traits into mathematical vectors, we calculate the similarity between users to
+      recommend the best partners.
 \end{itemize}
 
 \section{Data Representation and Processing}
-Our system uses the ``Cupid's Algorithm'' dataset. The data processing is handled in the \texttt{data\_loader.py} module to ensure the data is clean and ready for math calculations.
+Our system uses the ``Cupid's Algorithm'' dataset. The data processing is handled in the \texttt{data\_loader.py} module
+ to ensure the data is clean and ready for math calculations.
 \begin{itemize}
-    \item \textbf{Data Extraction and De-duplication:} The original dataset pairs users into two columns (prefix \texttt{a\_} and \texttt{b\_}). We split them into individual users and use a hashing signature to remove duplicates. The maximum number of users is capped at 4,000 to keep the program running fast.
-    \item \textbf{One-Hot Encoding:} For text-based categories like location, career field, and love language, we manually implemented one-hot encoding. This turns text into binary numbers (0 or 1), ensuring all categories have an equal mathematical distance.
-    \item \textbf{Data Normalization:} For numerical data (like age and the Big Five personality traits), the system finds the minimum and maximum values in each column and scales every value to a range between 0.0 and 1.0. Finally, it outputs a clean, combined feature vector for each user.
+    \item \textbf{Data Extraction and De-duplication:} The original dataset pairs users into two columns
+    (prefix \texttt{a\_} and \texttt{b\_}). We split them into individual users and use a hashing signature to remove
+     duplicates. The maximum number of users is capped at 4,000 to keep the program running fast.
+    \item \textbf{One-Hot Encoding:} For text-based categories like location, career field, and love language, we
+    manually implemented one-hot encoding. This turns text into binary numbers (0 or 1), ensuring all categories have
+     an equal mathematical distance.
+    \item \textbf{Data Normalization:} For numerical data (like age and the Big Five personality traits), the system
+    finds the minimum and maximum values in each column and scales every value to a range between 0.0 and 1.0. Finally,
+    it outputs a clean, combined feature vector for each user.
 \end{itemize}
 
 \section{Graph Modeling}
-The social network structure is managed by the \texttt{CompatibilityGraph} class in \texttt{graph\_model.py}, which is built on top of the \texttt{networkx} library.
+The social network structure is managed by the \texttt{CompatibilityGraph} class in \texttt{graph\_model.py}, which is
+built on top of the \texttt{networkx} library.
 \begin{itemize}
     \item \textbf{Creating Nodes:} Every user's feature vector is added as an attribute to a unique node in the graph.
-    \item \textbf{Building Edges:} The system compares every pair of nodes. If the calculated similarity weight between two users is strictly greater than our threshold (set to 0.75), an edge is created between them.
-    \item \textbf{Dynamic User Insertion:} When a new user joins, we ensure they are not left isolated. Even if their similarity scores to others are below the 0.75 threshold, the system forces a connection to their top 5 closest matches. This fallback guarantees the recommendation algorithm will work properly.
+    \item \textbf{Building Edges:} The system compares every pair of nodes. If the calculated similarity weight between
+     two users is strictly greater than our threshold (set to 0.75), an edge is created between them.
+    \item \textbf{Dynamic User Insertion:} When a new user joins, we ensure they are not left isolated. Even if their
+    similarity scores to others are below the 0.75 threshold, the system forces a connection to their top 5 closest
+    matches. This fallback guarantees the recommendation algorithm will work properly.
 \end{itemize}
 
 \section{Computational Algorithms}
-The core recommendation logic is implemented in \texttt{recommendation.py}. We do not just look at direct friends; we also explore the network deeply.
+The core recommendation logic is implemented in \texttt{recommendation.py}. We do not just look at direct friends; we
+also explore the network deeply.
 \begin{itemize}
-    \item \textbf{Euclidean Compatibility:} We calculate the Euclidean distance $d$ between two user vectors. This distance is converted into a compatibility weight between 0.0 and 1.0 using the formula $1.0 - (d / d_{max})$. 
-    \item \textbf{2-Degree Weighted BFS:} To find hidden compatibility, we look at "friends of friends" (a depth of 2 in the graph). The program runs a custom Breadth-First Search (BFS). The indirect recommendation score is calculated by multiplying the weights of the two connecting edges: $Score(A, C) = w_1 \times w_2$. The algorithm tracks the highest scores and returns the Top 5 indirect matches.
+    \item \textbf{Euclidean Compatibility:} We calculate the Euclidean distance $d$ between two user vectors. This
+     distance is converted into a compatibility weight between 0.0 and 1.0 using the formula $1.0 - (d / d_{max})$.
+    \item \textbf{2-Degree Weighted BFS:} To find hidden compatibility, we look at "friends of friends" (a depth of 2
+    in the graph). The program runs a custom Breadth-First Search (BFS). The indirect recommendation score is calculated
+     by multiplying the weights of the two connecting edges: $Score(A, C) = w_1 \times w_2$. The algorithm tracks the
+     highest scores and returns the Top 5 indirect matches.
 \end{itemize}
 
 \section{Interactive System and Visualization}
-We created a user-friendly process that connects the backend logic to visual outputs, found in \texttt{main.py} and \texttt{visualizer.py}.
+We created a user-friendly process that connects the backend logic to visual outputs, found in \texttt{main.py} and
+\texttt{visualizer.py}.
 \begin{itemize}
-    \item \textbf{Terminal Interaction:} When the program runs, it asks the user to rate their personality traits and select their love language in the terminal. This data is instantly converted into a vector and added to the network.
-    \item \textbf{Interactive Plotly Graph:} Instead of a basic static graph, we used \texttt{plotly.graph\_objects} to render a premium, interactive topology map in the web browser. We manipulated the layout weights to physically pull the best matches closer to the user. 
-    \item \textbf{Visual Design:} To help the user easily find their own spot, the user's node is generated as the \textbf{largest circle} on the screen and is colored \textbf{Red}. The Top 5 recommendations are shown as slightly smaller Gold nodes, and the lines connecting them to the user are yellow. Regular members of the network are much smaller Light Blue nodes. Users can also hover their mouse over the nodes to see exact compatibility scores.
+    \item \textbf{Terminal Interaction:} When the program runs, it asks the user to rate their personality traits and
+     select their love language in the terminal. This data is instantly converted into a vector and added
+      to the network.
+    \item \textbf{Interactive Plotly Graph:} Instead of a basic static graph, we used \texttt{plotly.graph\_objects}
+    to render a premium, interactive topology map in the web browser. We manipulated the layout weights to physically
+    pull the best matches closer to the user.
+    \item \textbf{Visual Design:} To help the user easily find their own spot, the user's node is generated as the
+    \textbf{largest circle} on the screen and is colored \textbf{Red}. The Top 5 recommendations are shown as slightly
+     smaller Gold nodes, and the lines connecting them to the user are yellow. Regular members of the network are much
+     smaller Light Blue nodes. Users can also hover their mouse over the nodes to see exact compatibility scores.
 \end{itemize}
 
 \section{Running the Program and Expected Output}
@@ -59,16 +88,20 @@ To run the system, the TA should simply run the \texttt{main.py} file in their t
 python main.py
 \end{verbatim}
 
-Once the program starts, it will immediately begin asking for your information to fill out the interactive survey. The TA will be prompted to input their personality data directly into the terminal. 
+Once the program starts, it will immediately begin asking for your information to fill out the interactive survey.
+The TA will be prompted to input their personality data directly into the terminal.
 \begin{itemize}
-    \item First, it will ask the user to rate 5 personality traits (Openness, Conscientiousness, Extraversion, Agreeableness, and Expressiveness) on a scale from 0 to 10. The TA should type a number and press Enter for each.
+    \item First, it will ask the user to rate 5 personality traits (Openness, Conscientiousness, Extraversion,
+    Agreeableness, and Expressiveness) on a scale from 0 to 10. The TA should type a number and press Enter for each.
     \item Second, it will ask the user to select their ``Love Language'' by choosing a number from 1 to 5.
 \end{itemize}
 
 \subsection{Expected Output}
-After the inputs are received, the TA will see step-by-step loading messages indicating that the dataset is being processed and the graph is being built. 
+After the inputs are received, the TA will see step-by-step loading messages indicating that the dataset is being
+processed and the graph is being built.
 
-Finally, it will print a \textbf{``YOU HAVE BEEN MATCHED!''} banner. Below this, it will list the Top 5 recommended users along with their calculated compatibility scores.
+Finally, it will print a \textbf{``YOU HAVE BEEN MATCHED!''} banner. Below this, it will list the Top 5 recommended
+users along with their calculated compatibility scores.
 
 \begin{figure}[h]
     \centering
@@ -78,14 +111,22 @@ Finally, it will print a \textbf{``YOU HAVE BEEN MATCHED!''} banner. Below this,
 \end{figure}
 
 \section{Interactive Visualization Features}
-After the terminal outputs the results, the program will automatically open a file in your web browser to display the generated graph based on the information you just entered. 
+After the terminal outputs the results, the program will automatically open a file in your web browser to display the
+generated graph based on the information you just entered.
 
-We built this interface using the \texttt{plotly} library, which provides several interactive features for the TA to explore:
+We built this interface using the \texttt{plotly} library, which provides several interactive features for the TA to
+explore:
 \begin{itemize}
-    \item \textbf{How to Find Yourself:} Because networks can be visually overwhelming, we made sure you cannot miss your own position. \textbf{Just look for the largest red circle} on the screen; that is your node!
-    \item \textbf{Hover Information:} The TA can hover their mouse over any node in the graph. Hovering over the large Red node will display ``You!''. Hovering over the Gold nodes will display ``Top Match'' along with their exact compatibility score. 
-    \item \textbf{Zoom In and Out:} The TA can left-click and drag to select a specific area to zoom in. To zoom out, they can simply right-click and double-click.
-    \item \textbf{Visual Layout Mechanics:} To make the results obvious, the algorithm temporarily adds heavy weights to the edges between the user and their Top 5 matches. This physically pulls the best matches closer to you. The lines connecting the user and their Top 5 matches are distinctly colored yellow. 
+    \item \textbf{How to Find Yourself:} Because networks can be visually overwhelming, we made sure you cannot miss
+    your own position. \textbf{Just look for the largest red circle} on the screen; that is your node!
+    \item \textbf{Hover Information:} The TA can hover their mouse over any node in the graph. Hovering over the large
+    Red node will display ``You!''. Hovering over the Gold nodes will display ``Top Match'' along with their exact
+    compatibility score.
+    \item \textbf{Zoom In and Out:} The TA can left-click and drag to select a specific area to zoom in. To zoom out,
+    they can simply right-click and double-click.
+    \item \textbf{Visual Layout Mechanics:} To make the results obvious, the algorithm temporarily adds heavy weights
+     to the edges between the user and their Top 5 matches. This physically pulls the best matches closer to you. The
+      lines connecting the user and their Top 5 matches are distinctly colored yellow.
 \end{itemize}
 
 \begin{figure}[h]
@@ -98,46 +139,72 @@ We built this interface using the \texttt{plotly} library, which provides severa
 \section{Changes to the Project Plan}
 Between our initial proposal and this final submission, we made a few important upgrades to our project plan:
 \begin{enumerate}
-    \item \textbf{Upgraded Visualization Library:} In our proposal, we planned to use \texttt{matplotlib} to draw the graph. However, we realized that a static image is too messy for hundreds of nodes. We changed our plan and used \texttt{plotly.graph\_objects} instead. This allowed us to build an ``enterprise topology'' graph that the user can actually interact with (hover, zoom).
-    \item \textbf{Graph Connectivity Fallback:} While testing our mathematical model, we found that if a user's inputs were very unique, their similarity weights would fall below our 0.75 threshold, leaving them as an isolated node with zero edges. To fix this, we added a new ``fallback'' logic: the system will force the graph to connect the user to their top 5 closest matches, even if the math score is below the strict threshold.
+    \item \textbf{Upgraded Visualization Library:} In our proposal, we planned to use \texttt{matplotlib} to draw the
+     graph. However, we realized that a static image is too messy for hundreds of nodes. We changed our plan and used
+     \texttt{plotly.graph\_objects} instead. This allowed us to build an ``enterprise topology'' graph that the user
+     can actually interact with (hover, zoom).
+    \item \textbf{Graph Connectivity Fallback:} While testing our mathematical model, we found that if a user's inputs
+     were very unique, their similarity weights would fall below our 0.75 threshold, leaving them as an isolated node
+      with zero edges. To fix this, we added a new ``fallback'' logic: the system will force the graph to connect the
+      user to their top 5 closest matches, even if the math score is below the strict threshold.
 \end{enumerate}
 
 \section{Discussion and Results Analysis}
 
 \subsection{Did the Results Achieve the Goal?}
-Yes, the computational results successfully answered our original research question. We proved that relationship compatibility can be mapped using Graph Theory. By implementing the 2-degree Weighted BFS algorithm, the system successfully found ``friends of friends'' with high compatibility scores. This showed that utilizing the graph's topology can uncover deep, hidden matches that simple linear filtering (just sorting people by direct distance) would completely miss.
+Yes, the computational results successfully answered our original research question. We proved that relationship
+ compatibility can be mapped using Graph Theory. By implementing the 2-degree Weighted BFS algorithm, the system
+ successfully found ``friends of friends'' with high compatibility scores. This showed that utilizing the graph's
+ topology can uncover deep, hidden matches that simple linear filtering (just sorting people by direct distance)
+  would completely miss.
 
 \subsection{Limitations Encountered}
 Despite the success, we encountered several limitations:
 \begin{itemize}
-    \item \textbf{Performance with $O(N^2)$ Complexity:} Because we calculate the Euclidean distance between \textit{every} pair of users to build the graph, the time complexity grows very fast. If we used the entire massive dataset, the program would take too long to run. To solve this, we had to set a \texttt{max\_users} limit in our data loader to cap the graph size and prevent performance explosion.
-    \item \textbf{Visualization Clutter:} Even with only a few thousand nodes, rendering every single edge in Plotly makes the browser lag. As a limitation of the rendering engine, we had to write a sub-graph logic that only renders the user, their matches, and a localized cluster of about 250 nodes, rather than the entire database.
+    \item \textbf{Performance with $O(N^2)$ Complexity:} Because we calculate the Euclidean distance between
+    \textit{every} pair of users to build the graph, the time complexity grows very fast. If we used the entire massive
+    dataset, the program would take too long to run. To solve this, we had to set a \texttt{max\_users} limit in our
+     data loader to cap the graph size and prevent performance explosion.
+    \item \textbf{Visualization Clutter:} Even with only a few thousand nodes, rendering every single edge in Plotly
+    makes the browser lag. As a limitation of the rendering engine, we had to write a sub-graph logic that only renders
+    the user, their matches, and a localized cluster of about 250 nodes, rather than the entire database.
 \end{itemize}
 
 \subsection{Next Steps for Further Exploration}
 If we were to continue developing this project, the next steps would be:
 \begin{itemize}
-    \item \textbf{Optimizing the Math:} Instead of comparing every single node pair ($O(N^2)$), we could implement spatial data structures like KD-Trees to find nearest neighbors much faster.
-    \item \textbf{Machine Learning Weights:} Currently, our edge weights are calculated using a hard-coded Euclidean distance formula. In the future, we could train a Graph Neural Network (GNN) to automatically learn and predict which nodes should be connected based on historical dating success rates.
+    \item \textbf{Optimizing the Math:} Instead of comparing every single node pair ($O(N^2)$), we could implement
+    spatial data structures like KD-Trees to find nearest neighbors much faster.
+    \item \textbf{Machine Learning Weights:} Currently, our edge weights are calculated using a hard-coded Euclidean
+    distance formula. In the future, we could train a Graph Neural Network (GNN) to automatically learn and predict
+     which nodes should be connected based on historical dating success rates.
 \end{itemize}
 
 \section{Conclusion}
-The ``Cupid Graphing'' project successfully demonstrates how data structures can solve real-world problems. By normalizing user traits into vectors, building a weighted graph, and exploring 2-degree connections with BFS, we created a highly accurate and interactive matching engine.
+The ``Cupid Graphing'' project successfully demonstrates how data structures can solve real-world problems. By
+normalizing user traits into vectors, building a weighted graph, and exploring 2-degree connections with BFS, we
+ created a highly accurate and interactive matching engine.
 
 \section{References}
 
 \begin{itemize}
-    \item NetworkX Developers. ``Tutorial — NetworkX 3.4.2 Documentation.'' \textit{NetworkX}, 2024, \url{https://networkx.org/documentation/stable/tutorial.html}.
-    
-    \item Sheikh, Sahil. ``Recommendation System Using Knowledge Graphs and Machine Learning.'' \textit{Medium}, 2023, \url{https://medium.com/@sheikh.sahil12299/recommendation-system-using-knowledge-graphs-and-machine-learning-4060c6}.
-    
-    \item Auroria. ``Graph-Based Recommender Systems.'' \textit{Auroria.io}, 2024, \url{https://www.auroria.io/graph-based-recommender-syst}.
-    
-    \item ``Getting Started with Graph Analysis in Python with Pandas and NetworkX.'' \textit{Towards Data Science}, 2022, \url{https://medium.com/data-science/getting-started-with-graph-analysis-in-python-with-pandas-and-net}.
-    
-    \item Gedipudi, Likitha. ``Cupid's Algorithm.'' \textit{Kaggle}, 2024, \url{https://www.kaggle.com/datasets/likithagedipudi/cupids-algorithm}.
-    
-    \item Plotly. ``Network Graphs in Python.'' \textit{Plotly Graphing Libraries}, \url{https://plotly.com/python/network-graphs/}.
+    \item NetworkX Developers. ``Tutorial — NetworkX 3.4.2 Documentation.'' \textit{NetworkX}, 2024,
+    \url{https://networkx.org/documentation/stable/tutorial.html}.
+
+    \item Sheikh, Sahil. ``Recommendation System Using Knowledge Graphs and Machine Learning.'' \textit{Medium}, 2023,
+    \url{https://medium.com/@sheikh.sahil12299/recommendation-system-using-knowledge-graphs-and-machine-learning-4060c6}
+
+    \item Auroria. ``Graph-Based Recommender Systems.'' \textit{Auroria.io}, 2024, \url{https://www.auroria.io/graph-
+    based-recommender-syst}.
+
+    \item ``Getting Started with Graph Analysis in Python with Pandas and NetworkX.'' \textit{Towards Data Science},
+    2022, \url{https://medium.com/data-science/getting-started-with-graph-analysis-in-python-with-pandas-and-net}.
+
+    \item Gedipudi, Likitha. ``Cupid's Algorithm.'' \textit{Kaggle}, 2024, \url{https://www.kaggle.com/datasets/
+    likithagedipudi/cupids-algorithm}.
+
+    \item Plotly. ``Network Graphs in Python.'' \textit{Plotly Graphing Libraries}, \url{https://plotly.com/python/
+    network-graphs/}.
 \end{itemize}
 
 \end{document}
