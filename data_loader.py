@@ -39,7 +39,12 @@ def load_and_clean_data(filepath: str, max_users: int = 4000) -> list[dict[str, 
 
     >>> import tempfile, os
     >>> temp_csv = tempfile.NamedTemporaryFile(mode='w+', delete=False, newline='', encoding='utf-8-sig')
-    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion','a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language','a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition','b_openness','b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity','b_love_language','b_emotional_expressiveness']
+    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion',
+    >>> 'a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language',
+    >>> 'a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition',
+    >>> 'b_openness',
+    >>> 'b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity','b_love_language',
+    >>> 'b_emotional_expressiveness']
     >>> _ = temp_csv.write(','.join(header) + '\\n')
     >>> row1 = ['20','1','NY','IT','0.5','0.5','0.5','0.5','0.5','0.5','0.5','Time','0.5'] * 2
     >>> _ = temp_csv.write(','.join(row1) + '\\n')
@@ -82,8 +87,8 @@ def apply_one_hot_encoding(data: list[dict[str, Any]], column_name: str) -> list
     Preconditions:
         - column_name != ''
 
-    >>> rows = [{'user_id': 'U1', 'love_language': 'Quality Time'},
-    ...         {'user_id': 'U2', 'love_language': 'Physical Touch'}]
+    >>> rows = [{'user_id': 'User_1', 'love_language': 'Quality Time'},
+    ...         {'user_id': 'User_2', 'love_language': 'Physical Touch'}]
     >>> encoded = apply_one_hot_encoding(rows, 'love_language')
     >>> encoded[0]['love_language_Quality_Time']
     1
@@ -163,7 +168,11 @@ def generate_user_vectors(filepath: str, max_users: int = 4000) -> dict[str, lis
 
     >>> import tempfile, os
     >>> temp_csv = tempfile.NamedTemporaryFile(mode='w+', delete=False, newline='', encoding='utf-8-sig')
-    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion','a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language','a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition','b_openness','b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity','b_love_language','b_emotional_expressiveness']
+    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion'
+    >>> ,'a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language',
+    >>> 'a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition',
+    >>> 'b_openness','b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity',
+    >>> 'b_love_language','b_emotional_expressiveness']
     >>> _ = temp_csv.write(','.join(header) + '\\n')
     >>> row1 = ['20','1','NY','IT','0.5','0.5','0.5','0.5','0.5','0.5','0.5','Time','0.5'] * 2
     >>> _ = temp_csv.write(','.join(row1) + '\\n')
@@ -243,7 +252,7 @@ if __name__ == '__main__':
     doctest.testmod()
 
     # import python_ta
-    # 
+    #
     # python_ta.check_all(config={
     #     'extra-imports': ['csv'],
     #     'allowed-io': ['load_and_clean_data'],

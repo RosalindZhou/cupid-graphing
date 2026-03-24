@@ -200,8 +200,8 @@ def draw_interactive_cluster(graph: nx.Graph, new_user_id: str, matches: list[tu
 
 
 if __name__ == '__main__':
+    pass
     # import python_ta
-
     # python_ta.check_all(config={
     #     'extra-imports': ['networkx', 'plotly.graph_objects', 'matplotlib.pyplot'],
     #     'allowed-io': ['draw_interactive_cluster', 'draw_social_cluster'],
