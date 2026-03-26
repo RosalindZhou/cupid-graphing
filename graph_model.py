@@ -1,4 +1,3 @@
-# This Python module contains the class that represents the social network graph.
 
 """Graph model for compatibility network."""
 from __future__ import annotations
@@ -54,10 +53,10 @@ class CompatibilityGraph:
         """Calculate the weight between all pairs of nodes using the similarity_function.
 
         If the calculated weight exceeds self.threshold, add a weighted edge to the graph.
-        
+
         Preconditions:
             - len(self.graph.nodes) > 0
-            
+
         >>> g = CompatibilityGraph(threshold=0.5)
         >>> g.add_users_as_nodes({'A': [1.0], 'B': [0.8], 'C': [0.1]})
         >>> g.build_edges(lambda u, v: 1.0 - abs(u[0] - v[0]))
@@ -82,12 +81,12 @@ class CompatibilityGraph:
                      new_user_vector: list[float],
                      similarity_function: Callable[[list[float], list[float]], float]) -> None:
         """Add a new user dynamically and compute edges to existing nodes.
-        Ensures the new user is connected to at least their 5 top matches (if possible) 
+        Ensures the new user is connected to at least their 5 top matches (if possible)
         even if weights are strictly below the threshold.
-        
+
         Preconditions:
             - new_user_id not in self.graph
-            
+
         >>> g = CompatibilityGraph(threshold=0.9)
         >>> g.add_users_as_nodes({'A': [1.0], 'B': [1.0]})
         >>> g.add_new_user('C', [0.1], lambda u, v: 1.0 - abs(u[0] - v[0]))
@@ -103,9 +102,9 @@ class CompatibilityGraph:
             existing_vector = self.graph.nodes[existing_id]['vector']
             weight = similarity_function(new_user_vector, existing_vector)
             weights.append((existing_id, weight))
-            
+
         weights.sort(key=lambda x: x[1], reverse=True)
-        
+
         connected = 0
         for existing_id, weight in weights:
             # Force connect to at least top 5 users if threshold is too strict
@@ -118,7 +117,6 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    # Uncomment when ready
     # import python_ta
     # python_ta.check_all(config={
     #     'extra-imports': ['networkx'],
