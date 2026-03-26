@@ -1,0 +1,11 @@
+# Testing and code checking
+hypothesis
+pytest
+python-ta
+
+# Graphics and data visualization
+plotly
+matplotlib
+
+# Graph algorithms and data structures (Cupid Engine specific)
+networkx
