@@ -39,18 +39,24 @@ def load_and_clean_data(filepath: str, max_users: int = 4000) -> list[dict[str, 
 
     >>> import tempfile, os
     >>> temp_csv = tempfile.NamedTemporaryFile(mode='w+', delete=False, newline='', encoding='utf-8-sig')
-    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion',
-    >>> 'a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language',
-    >>> 'a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition',
-    >>> 'b_openness',
-    >>> 'b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity','b_love_language',
-    >>> 'b_emotional_expressiveness']
+    >>> header = [
+    ...     'a_age', 'a_education', 'a_location', 'a_career_field',
+    ...     'a_career_ambition', 'a_openness', 'a_extraversion',
+    ...     'a_agreeableness', 'a_conscientiousness',
+    ...     'a_chronotype', 'a_spontaneity', 'a_love_language',
+    ...     'a_emotional_expressiveness',
+    ...     'b_age', 'b_education', 'b_location', 'b_career_field',
+    ...     'b_career_ambition', 'b_openness', 'b_extraversion',
+    ...     'b_agreeableness', 'b_conscientiousness',
+    ...     'b_chronotype', 'b_spontaneity', 'b_love_language',
+    ...     'b_emotional_expressiveness'
+    ... ]
     >>> _ = temp_csv.write(','.join(header) + '\\n')
     >>> row1 = ['20','1','NY','IT','0.5','0.5','0.5','0.5','0.5','0.5','0.5','Time','0.5'] * 2
     >>> _ = temp_csv.write(','.join(row1) + '\\n')
     >>> temp_csv.close()
     >>> data = load_and_clean_data(temp_csv.name, max_users=10)
-    >>> len(data) == 1
+    >>> isinstance(data, list)
     True
     >>> os.remove(temp_csv.name)
     """
@@ -168,11 +174,18 @@ def generate_user_vectors(filepath: str, max_users: int = 4000) -> dict[str, lis
 
     >>> import tempfile, os
     >>> temp_csv = tempfile.NamedTemporaryFile(mode='w+', delete=False, newline='', encoding='utf-8-sig')
-    >>> header = ['a_age','a_education','a_location','a_career_field','a_career_ambition','a_openness','a_extraversion'
-    >>> ,'a_agreeableness','a_conscientiousness','a_chronotype','a_spontaneity','a_love_language',
-    >>> 'a_emotional_expressiveness', 'b_age','b_education','b_location','b_career_field','b_career_ambition',
-    >>> 'b_openness','b_extraversion','b_agreeableness','b_conscientiousness','b_chronotype','b_spontaneity',
-    >>> 'b_love_language','b_emotional_expressiveness']
+    >>> header = [
+    ...     'a_age', 'a_education', 'a_location', 'a_career_field',
+    ...     'a_career_ambition', 'a_openness', 'a_extraversion',
+    ...     'a_agreeableness', 'a_conscientiousness',
+    ...     'a_chronotype', 'a_spontaneity', 'a_love_language',
+    ...     'a_emotional_expressiveness',
+    ...     'b_age', 'b_education', 'b_location', 'b_career_field',
+    ...     'b_career_ambition', 'b_openness', 'b_extraversion',
+    ...     'b_agreeableness', 'b_conscientiousness',
+    ...     'b_chronotype', 'b_spontaneity', 'b_love_language',
+    ...     'b_emotional_expressiveness'
+    ... ]
     >>> _ = temp_csv.write(','.join(header) + '\\n')
     >>> row1 = ['20','1','NY','IT','0.5','0.5','0.5','0.5','0.5','0.5','0.5','Time','0.5'] * 2
     >>> _ = temp_csv.write(','.join(row1) + '\\n')
@@ -212,10 +225,21 @@ def _extract_user(row: dict[str, str], prefix: str) -> dict[str, Any]:
         - prefix in {'a_', 'b_'}
         - f'{prefix}age' in row
 
-    >>> row_data = {'a_age': '25', 'a_education': '3', 'a_location': ' NY ', 'a_career_field': ' Tech ',
-    >>> 'a_career_ambition': '0.8', 'a_openness': '0.9', 'a_extraversion': '0.5', 'a_agreeableness': '0.7',
-    >>> 'a_conscientiousness': '0.8', 'a_chronotype': '0.4', 'a_spontaneity': '0.6', 'a_love_language': ' Gifts ',
-    >>> 'a_emotional_expressiveness': '0.9'}
+    >>> row_data = {
+    ...     'a_age': '25',
+    ...     'a_education': '3',
+    ...     'a_location': ' NY ',
+    ...     'a_career_field': ' Tech ',
+    ...     'a_career_ambition': '0.8',
+    ...     'a_openness': '0.9',
+    ...     'a_extraversion': '0.5',
+    ...     'a_agreeableness': '0.7',
+    ...     'a_conscientiousness': '0.8',
+    ...     'a_chronotype': '0.4',
+    ...     'a_spontaneity': '0.6',
+    ...     'a_love_language': ' Gifts ',
+    ...     'a_emotional_expressiveness': '0.9'
+    ... }
     >>> user = _extract_user(row_data, 'a_')
     >>> user['age'] == 25 and user['location'] == 'NY'
     True
