@@ -12,7 +12,7 @@ from graph_model import CompatibilityGraph
 
 def get_demographics() -> tuple[int, int]:
     """Ask for and return (age, education).
-    
+
     >>> # Skipping doctest since it requires active stdin terminal user interaction.
     """
     # 1. Age
@@ -41,7 +41,7 @@ def get_demographics() -> tuple[int, int]:
 
 def get_career_info() -> tuple[str, float]:
     """Ask for and return (career_field, career_ambition).
-    
+
     >>> # Skipping doctest since it requires active stdin terminal user interaction.
     """
     careers = [
@@ -77,14 +77,14 @@ def get_career_info() -> tuple[str, float]:
 
 def get_personality_traits() -> list[float]:
     """Ask for and return the 5 personality trait values (normalized 0-1).
-    
+
     >>> # Skipping doctest since it requires active stdin terminal user interaction.
     """
     print("\n--- Personality Survey (from 0 to 10) ---")
 
     def get_trait_input(prompt: str) -> float:
         """Prompt the user for a single trait and return its normalized value.
-        
+
         >>> # Skipping doctest since it requires active stdin terminal user interaction.
         """
         val = -1.0
@@ -107,7 +107,7 @@ def get_personality_traits() -> list[float]:
 
 def get_love_lang() -> str:
     """Ask for and return the love language selection.
-    
+
     >>> # Skipping doctest since it requires active stdin terminal user interaction.
     """
     print("\nWhat's your love language?")
@@ -130,7 +130,7 @@ def get_love_lang() -> str:
 
 def get_user_input() -> dict[str, Any]:
     """Return a dictionary of user answers based on terminal prompts.
-    
+
     >>> # Skipping doctest since it requires active stdin terminal user interaction.
     """
     print("\n" + "=" * 50)
@@ -159,14 +159,17 @@ def get_user_input() -> dict[str, Any]:
     }
 
 
-def process_and_align_data(new_user_id: str, new_user_dict: dict[str, Any]) -> tuple[dict[str, list[float]], list[float]]:
+def process_and_align_data(new_user_id: str, new_user_dict: dict[str, Any]) -> \
+        (tuple[dict[str, list[float]], list[float]]):
     """Process dataset and new user together to align features and return vectors.
-    
+
     Preconditions:
         - new_user_id != ''
         - new_user_dict != {}
-        
-    >>> test_dict = {'age': 25, 'education': 3, 'career_ambition': 0.8, 'openness': 0.5, 'extraversion': 0.5, 'agreeableness': 0.5, 'conscientiousness': 0.5, 'chronotype': 0.5, 'spontaneity': 0.5, 'emotional_expressiveness': 0.5, 'location': 'Urban', 'career_field': 'Tech', 'love_language': 'Quality Time'}
+
+    >>> test_dict = {'age': 25, 'education': 3, 'career_ambition': 0.8, 'openness': 0.5, 'extraversion': 0.5,
+     'agreeableness': 0.5, 'conscientiousness': 0.5, 'chronotype': 0.5, 'spontaneity': 0.5,
+     'emotional_expressiveness': 0.5, 'location': 'Urban', 'career_field': 'Tech', 'love_language': 'Quality Time'}
     >>> u_vecs, inter_vec = process_and_align_data("Test_User", test_dict)
     >>> 'Test_User' not in u_vecs
     True
@@ -204,7 +207,7 @@ def process_and_align_data(new_user_id: str, new_user_dict: dict[str, Any]) -> t
 
 def main() -> None:
     """Execute the main workflow of the Cupid Graphing recommendation system.
-    
+
     >>> # Full workflow script execution cannot be doctested linearly due to terminal dependency.
     """
     print("Welcome to Cupid Interactive System!")

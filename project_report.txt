@@ -91,8 +91,9 @@ python main.py
 Once the program starts, it will immediately begin asking for your information to fill out the interactive survey.
 The TA will be prompted to input their personality data directly into the terminal.
 \begin{itemize}
-    \item First, it will ask the user to rate 5 personality traits (Openness, Conscientiousness, Extraversion,
-    Agreeableness, and Expressiveness) on a scale from 0 to 10. The TA should type a number and press Enter for each.
+    \item First, it will ask the user to type age, education, career ambition,5 personality traits (Openness,
+     Conscientiousness, Extraversion, Agreeableness, and Expressiveness) on a scale from 0 to 10.
+     The TA should type a number and press Enter for each.
     \item Second, it will ask the user to select their ``Love Language'' by choosing a number from 1 to 5.
 \end{itemize}
 

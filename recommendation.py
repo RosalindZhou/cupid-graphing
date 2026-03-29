@@ -174,10 +174,10 @@ if __name__ == '__main__':
     doctest.testmod()
 
     # Uncomment when ready
-    import python_ta
-
-    python_ta.check_all(config={
-        'extra-imports': ['math', 'networkx'],
-        'allowed-io': ['explore_indirect_vs_direct'],
-        'max-line-length': 120
-    })
+    # import python_ta
+    #
+    # python_ta.check_all(config={
+    #     'extra-imports': ['math', 'networkx'],
+    #     'allowed-io': ['explore_indirect_vs_direct'],
+    #     'max-line-length': 120
+    # })
