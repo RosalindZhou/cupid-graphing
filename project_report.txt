@@ -52,16 +52,31 @@ built on top of the \texttt{networkx} library.
     matches. This fallback guarantees the recommendation algorithm will work properly.
 \end{itemize}
 
-\section{Computational Algorithms}
-The core recommendation logic is implemented in \texttt{recommendation.py}. We do not just look at direct friends; we
-also explore the network deeply.
+\section{Computational Algorithms \& Library Integration}
+
+Our recommendation engine is built upon the \textbf{NetworkX} library, leveraging its specialized graph data structures
+and traversal methods.
+
+\subsection{Graph Data Structures}
+We utilize the \texttt{nx.Graph} object to represent the social network. This allows for:
 \begin{itemize}
-    \item \textbf{Euclidean Compatibility:} We calculate the Euclidean distance $d$ between two user vectors. This
-     distance is converted into a compatibility weight between 0.0 and 1.0 using the formula $1.0 - (d / d_{max})$.
-    \item \textbf{2-Degree Weighted BFS:} To find hidden compatibility, we look at "friends of friends" (a depth of 2
-    in the graph). The program runs a custom Breadth-First Search (BFS). The indirect recommendation score is calculated
-     by multiplying the weights of the two connecting edges: $Score(A, C) = w_1 \times w_2$. The algorithm tracks the
-     highest scores and returns the Top 5 indirect matches.
+    \item \textbf{Attribute Mapping:} User preference vectors are stored as \textbf{node attributes}
+    (\texttt{graph.nodes[n]['vector']}), enabling $O(1)$ access during similarity calculations.
+    \item \textbf{Edge Weighting:} Compatibility scores are mapped to \textbf{edge attributes} (\texttt{graph[u][v]
+    ['weight']}), which the algorithm uses to represent the strength of connections.
+\end{itemize}
+
+\subsection{2-Degree Weighted BFS}
+To identify "friends of friends," we implemented a custom traversal using the following \texttt{networkx} capabilities:
+\begin{itemize}
+    \item \textbf{Adjacency Discovery:} The \texttt{graph.neighbors(node)} function is used to efficiently iterate
+    through a user's local neighborhood.
+    \item \textbf{Indirect Scoring:} For a target node $A$ and an indirect contact $C$ connected via $B$, the score is
+    calculated as:
+    $Score(A, C) = w_{AB} \times w_{BC}$
+    where $w$ is retrieved directly from the edge weight attributes.
+    \item \textbf{Optimization:} The algorithm uses Python's \texttt{sorted()} function on the resulting dictionary to
+    return the Top 5 matches, filtering out existing edges to ensure novel recommendations.
 \end{itemize}
 
 \section{Interactive System and Visualization}
