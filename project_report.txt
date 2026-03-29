@@ -100,15 +100,8 @@ The TA will be prompted to input their personality data directly into the termin
 After the inputs are received, the TA will see step-by-step loading messages indicating that the dataset is being
 processed and the graph is being built.
 
-Finally, it will print a \textbf{``YOU HAVE BEEN MATCHED!''} banner. Below this, it will list the Top 5 recommended
+Finally, it will print a \textbf{``MATCHES FOUND''} banner. Below this, it will list the Top 5 recommended
 users along with their calculated compatibility scores.
-
-\begin{figure}[h]
-    \centering
-    % Please replace the image names with your actual terminal screenshots
-    \includegraphics[width=1\textwidth]{ExpectedMain.png}
-    \caption{Expected Terminal Input and Output}
-\end{figure}
 
 \section{Interactive Visualization Features}
 After the terminal outputs the results, the program will automatically open a file in your web browser to display the
@@ -128,13 +121,6 @@ explore:
      to the edges between the user and their Top 5 matches. This physically pulls the best matches closer to you. The
       lines connecting the user and their Top 5 matches are distinctly colored yellow.
 \end{itemize}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\linewidth]{ExpectedVisualized.png}
-    \caption{Interactive Plotly Visualization in the Browser}
-\end{figure}
-
 
 \section{Changes to the Project Plan}
 Between our initial proposal and this final submission, we made a few important upgrades to our project plan:
