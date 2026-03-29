@@ -59,7 +59,7 @@ def _build_layout_graph(graph: nx.Graph, new_user_id: str, match_ids: set[str]) 
     # The user requested to see the entire graph
     subgraph = graph.copy()
     layout_graph = subgraph.copy()
-    
+
     # Ensure matches have a strong edge for layout purposes
     for match_id in match_ids:
         if not layout_graph.has_edge(new_user_id, match_id):
@@ -215,7 +215,9 @@ def draw_interactive_cluster(graph: nx.Graph, new_user_id: str, matches: list[tu
 
 
 if __name__ == '__main__':
-    pass
+    import doctest
+    doctest.testmod()
+
     # import python_ta
     # python_ta.check_all(config={
     #     'extra-imports': ['networkx', 'plotly.graph_objects', 'matplotlib.pyplot'],

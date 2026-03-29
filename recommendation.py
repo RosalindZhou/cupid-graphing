@@ -170,13 +170,11 @@ def explore_indirect_vs_direct(graph: nx.Graph, node_a: str, node_c: str, indire
 
 if __name__ == '__main__':
     import doctest
-
     doctest.testmod()
 
-    # import python_ta
-    #
-    # python_ta.check_all(config={
-    #     'extra-imports': ['math', 'networkx'],
-    #     'allowed-io': ['explore_indirect_vs_direct'],
-    #     'max-line-length': 120
-    # })
+    import python_ta
+    python_ta.check_all(config={
+        'extra-imports': ['math', 'networkx'],
+        'allowed-io': ['explore_indirect_vs_direct'],
+        'max-line-length': 120
+    })
