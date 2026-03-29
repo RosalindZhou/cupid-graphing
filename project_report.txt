@@ -26,7 +26,9 @@
 \end{itemize}
 
 \section{Data Representation and Processing}
-Our system uses the ``Cupid's Algorithm'' dataset, which can be found at \url{https://www.kaggle.com/datasets/likithagedipudi/cupids-algorithm}. The data processing is handled in the \texttt{data\_loader.py} module
+Our system uses the ``Cupid's Algorithm'' dataset, which can be found at
+\url{https://www.kaggle.com/datasets/likithagedipudi/cupids-algorithm}. The data processing is handled in the
+ \texttt{data\_loader.py} module
  to ensure the data is clean and ready for math calculations.
 \begin{itemize}
     \item \textbf{Data Extraction and De-duplication:} The original dataset pairs users into two columns
@@ -146,7 +148,7 @@ Between our initial proposal and this final submission, we made a few important 
      \texttt{plotly.graph\_objects} instead. This allowed us to build an ``enterprise topology'' graph that the user
      can actually interact with (hover, zoom).
     \item \textbf{Graph Connectivity Fallback:} While testing our mathematical model, we found that if a user's inputs
-     were very unique, their similarity weights would fall below our 0.75 threshold, leaving them as an isolated node
+     were unique, their similarity weights would fall below our 0.75 threshold, leaving them as an isolated node
       with zero edges. To fix this, we added a new ``fallback'' logic: the system will force the graph to connect the
       user to their top 5 closest matches, even if the math score is below the strict threshold.
 \end{enumerate}
@@ -196,14 +198,17 @@ normalizing user traits into vectors, building a weighted graph, and exploring 2
     \item Sheikh, Sahil. ``Recommendation System Using Knowledge Graphs and Machine Learning.'' \textit{Medium}, 2023,
     \url{https://medium.com/@sheikh.sahil12299/recommendation-system-using-knowledge-graphs-and-machine-learning-4060c6}
 
-    \item Auroria. ``Graph-Based Recommender Systems.'' \textit{Auroria.io}, 2024, \url{https://www.auroria.io/graph-based-recommender-syst}.
+    \item Auroria. ``Graph-Based Recommender Systems.'' \textit{Auroria.io}, 2024,
+    \url{https://www.auroria.io/graph-based-recommender-syst}.
 
     \item ``Getting Started with Graph Analysis in Python with Pandas and NetworkX.'' \textit{Towards Data Science},
     2022, \url{https://medium.com/data-science/getting-started-with-graph-analysis-in-python-with-pandas-and-net}.
 
-    \item Gedipudi, Likitha. ``Cupid's Algorithm.'' \textit{Kaggle}, 2024, \url{https://www.kaggle.com/datasets/likithagedipudi/cupids-algorithm}.
+    \item Gedipudi, Likitha. ``Cupid's Algorithm.'' \textit{Kaggle}, 2024,
+    \url{https://www.kaggle.com/datasets/likithagedipudi/cupids-algorithm}.
 
-    \item Plotly. ``Network Graphs in Python.'' \textit{Plotly Graphing Libraries}, \url{https://plotly.com/python/network-graphs/}.
+    \item Plotly. ``Network Graphs in Python.'' \textit{Plotly Graphing Libraries},
+    \url{https://plotly.com/python/network-graphs/}.
 \end{itemize}
 
 \end{document}
