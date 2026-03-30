@@ -17,7 +17,7 @@ def get_demographics() -> tuple[int, int]:
     """
     # 1. Age
     age = 0
-    while age <= 18:
+    while age < 18:
         try:
             age = int(input("1. Enter your age (18+): "))
             if age < 18:

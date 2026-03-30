@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 import math
-import networkx as nx
 from typing import Any
+import networkx as nx
 
 
 def calculate_euclidean_weight(vec_u: list[float], vec_v: list[float], max_d: float) -> float:
