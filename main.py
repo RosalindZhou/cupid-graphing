@@ -225,7 +225,7 @@ def main() -> None:
     sim_func = recommendation.SimilarityCalculator(max_d)
 
     print("[Step 3/4] Building Compatibility Graph...")
-    graph = CompatibilityGraph(threshold=0.85)
+    graph = CompatibilityGraph(threshold=0.75)
     graph.add_users_as_nodes(u_vecs)
     graph.build_edges(sim_func)
     graph.add_new_user(inter_id, inter_vec, sim_func)
