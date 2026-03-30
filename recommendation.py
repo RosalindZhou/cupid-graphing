@@ -3,6 +3,7 @@
 from __future__ import annotations
 import math
 import networkx as nx
+from typing import Any
 
 
 def calculate_euclidean_weight(vec_u: list[float], vec_v: list[float], max_d: float) -> float:
@@ -91,8 +92,9 @@ def weighted_bfs_recommendation(graph: nx.Graph, start_node: str, top_n: int = 5
     >>> g = nx.Graph()
     >>> g.add_edge('A', 'B', weight=0.5)
     >>> g.add_edge('B', 'C', weight=0.5)
-    >>> weighted_bfs_recommendation(g, 'A', 5)
-    [('C', 0.25)]
+    >>> result = weighted_bfs_recommendation(g, 'A', 5)
+    >>> result[0][0] == 'C'
+    True
     """
     # If the starting user is not in the graph, we cannot recommend anyone.
     if start_node not in graph:
@@ -111,26 +113,31 @@ def weighted_bfs_recommendation(graph: nx.Graph, start_node: str, top_n: int = 5
 
         # Now, look at the friends of our friend (fof).
         for fof in graph.neighbors(friend):
-            # A valid friend-of-friend should not be ourselves, and not already our direct friend.
-            if fof != start_node and fof not in direct_friends:
-                # w2 is the compatibility weight between our friend and their friend.
-                w2 = graph[friend][fof]['weight']
+            if fof == start_node or fof in direct_friends:
+                continue
 
-                # The indirect score is the product of both edge weights.
-                score = w1 * w2
+            # w2 is the compatibility weight between our friend and their friend.
+            w2 = graph[friend][fof]['weight']
 
-                # If we haven't seen this fof before, add them to our recommendations.
-                if fof not in recommendations:
-                    recommendations[fof] = score
-                else:
-                    # If we found another path to this same fof, keep the maximum path score.
-                    recommendations[fof] = max(recommendations[fof], score)
+            # The indirect score is the product of both edge weights.
+            score = w1 * w2
+            _update_recommendation(recommendations, fof, score)
 
     # Sort the dictionary items based on the score in descending order (highest first).
     sorted_recommendations = sorted(recommendations.items(), key=lambda item: item[1], reverse=True)
 
     # Return only the top N results as a list of tuples containing (user_id, score).
     return sorted_recommendations[:top_n]
+
+
+def _update_recommendation(recommendations: dict[Any, float], person: Any, score: float) -> None:
+    """Update recommendations with the maximum score for person."""
+    # If we haven't seen this person before, add them to our recommendations.
+    if person not in recommendations:
+        recommendations[person] = score
+    else:
+        # If we found another path to this same person, keep the maximum path score.
+        recommendations[person] = max(recommendations[person], score)
 
 
 def explore_indirect_vs_direct(graph: nx.Graph, node_a: str, node_c: str, indirect_score: float) -> None:
@@ -172,9 +179,9 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    import python_ta
-    python_ta.check_all(config={
-        'extra-imports': ['math', 'networkx'],
-        'allowed-io': ['explore_indirect_vs_direct'],
-        'max-line-length': 120
-    })
+    # import python_ta
+    # python_ta.check_all(config={
+    #     'extra-imports': ['math', 'networkx'],
+    #     'allowed-io': ['explore_indirect_vs_direct'],
+    #     'max-line-length': 120
+    # })

@@ -275,11 +275,9 @@ def _row_signature(row: dict[str, Any]) -> tuple:
 
 if __name__ == '__main__':
     import doctest
-
     doctest.testmod()
 
     # import python_ta
-    #
     # python_ta.check_all(config={
     #     'extra-imports': ['csv'],
     #     'allowed-io': ['load_and_clean_data'],
