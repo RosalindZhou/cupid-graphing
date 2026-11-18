@@ -167,16 +167,17 @@ def process_and_align_data(new_user_id: str, new_user_dict: dict[str, Any]) -> \
         - new_user_id != ''
         - new_user_dict != {}
 
-    >>> test_dict = {'age': 25, 'education': 3, 'career_ambition': 0.8, 'openness': 0.5, 'extraversion': 0.5,
-     'agreeableness': 0.5, 'conscientiousness': 0.5, 'chronotype': 0.5, 'spontaneity': 0.5,
-     'emotional_expressiveness': 0.5, 'location': 'Urban', 'career_field': 'Tech', 'love_language': 'Quality Time'}
+    >>> test_dict = {'age': 25, 'education': 3, 'career_ambition': 0.8,
+    ...              'openness': 0.5, 'extraversion': 0.5, 'agreeableness': 0.5,
+    ...              'conscientiousness': 0.5, 'chronotype': 0.5, 'spontaneity': 0.5,
+    ...              'emotional_expressiveness': 0.5, 'location': 'Urban',
+    ...              'career_field': 'Tech', 'love_language': 'Quality Time'}
     >>> u_vecs, inter_vec = process_and_align_data("Test_User", test_dict)
     >>> 'Test_User' not in u_vecs
     True
     """
     users_data = data_loader.load_and_clean_data("cupid_algorithm_dataset.csv")
-    new_user_dict['user_id'] = new_user_id
-    combined_data = users_data + [new_user_dict]
+    combined_data = users_data + [{**new_user_dict, 'user_id': new_user_id}]
 
     # Encoding
     data = combined_data

@@ -124,7 +124,9 @@ def weighted_bfs_recommendation(graph: nx.Graph, start_node: str, top_n: int = 5
             _update_recommendation(recommendations, fof, score)
 
     # Sort the dictionary items based on the score in descending order (highest first).
-    sorted_recommendations = sorted(recommendations.items(), key=lambda item: item[1], reverse=True)
+    sorted_recommendations = sorted(
+        recommendations.items(), key=lambda item: (-item[1], item[0])
+    )
 
     # Return only the top N results as a list of tuples containing (user_id, score).
     return sorted_recommendations[:top_n]
